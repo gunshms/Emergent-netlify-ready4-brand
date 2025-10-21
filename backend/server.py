@@ -9,6 +9,8 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 import uuid
 from datetime import datetime, timezone
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from pydantic import EmailStr
 
 
 ROOT_DIR = Path(__file__).parent
@@ -18,6 +20,19 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Email configuration
+email_conf = ConnectionConfig(
+    MAIL_USERNAME=os.environ['SMTP_USERNAME'],
+    MAIL_PASSWORD=os.environ['SMTP_PASSWORD'],
+    MAIL_FROM=os.environ['EMAIL_FROM'],
+    MAIL_PORT=int(os.environ['SMTP_PORT']),
+    MAIL_SERVER=os.environ['SMTP_SERVER'],
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
+    USE_CREDENTIALS=True,
+    VALIDATE_CERTS=True
+)
 
 # Create the main app without a prefix
 app = FastAPI()
@@ -36,6 +51,11 @@ class StatusCheck(BaseModel):
 
 class StatusCheckCreate(BaseModel):
     client_name: str
+
+class ContactForm(BaseModel):
+    name: str
+    email: EmailStr
+    message: str
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
@@ -65,6 +85,34 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     
     return status_checks
+
+@api_router.post("/contact")
+async def send_contact_email(contact: ContactForm):
+    try:
+        # Create email message
+        message = MessageSchema(
+            subject=f"New Contact Form Message from {contact.name}",
+            recipients=[os.environ['EMAIL_FROM']],  # Send to the configured email
+            body=f"""
+            New contact form submission:
+
+            Name: {contact.name}
+            Email: {contact.email}
+            Message:
+            {contact.message}
+            """,
+            subtype="plain"
+        )
+
+        # Send email
+        fm = FastMail(email_conf)
+        await fm.send_message(message)
+
+        return {"message": "Email sent successfully"}
+
+    except Exception as e:
+        logger.error(f"Failed to send email: {str(e)}")
+        return {"error": "Failed to send email"}, 500
 
 # Include the router in the main app
 app.include_router(api_router)

@@ -1,0 +1,113 @@
+========================================
+INSTRUÇÕES PARA CONFIGURAR O EMAIL DO CONTATO
+========================================
+
+Data: 21/10/2025
+Autor: Cline (Assistente IA)
+
+========================================
+O QUE FOI IMPLEMENTADO:
+========================================
+
+✅ FUNCIONALIDADE DE EMAIL ADICIONADA
+
+1. BACKEND (servidor):
+   - Adicionei a biblioteca "fastapi-mail" no requirements.txt
+   - Configurei o servidor para enviar emails via Gmail SMTP
+   - Criei um novo endpoint /api/contact que recebe os dados do formulário
+   - Configurei o arquivo .env com as configurações de email
+
+2. FRONTEND (site):
+   - Modifiquei o componente Contact.js para enviar dados reais para o backend
+   - Substituí a mensagem falsa por uma chamada real para a API
+   - Mantive as mensagens de sucesso/erro para o usuário
+
+========================================
+O QUE VOCÊ PRECISA FAZER AGORA:
+========================================
+
+PASSO 1: CONFIGURAR SENHA DO GMAIL
+-----------------------------------
+Para que o email funcione, você precisa gerar uma "App Password" do Gmail:
+
+1. Vá para sua conta Google (gmail):
+   - Abra: https://myaccount.google.com/
+
+2. Ative a verificação em duas etapas:
+   - Segurança → Verificação em duas etapas → ATIVAR
+
+3. Gere uma senha de aplicativo:
+   - Segurança → Verificação em duas etapas → Senhas de app
+   - Clique em "Selecionar app" → Escolha "Mail"
+   - Clique em "Selecionar dispositivo" → Escolha "Outro" e digite "Contato Site"
+   - Clique em "GERAR"
+   - Copie a senha de 16 caracteres (exemplo: abcd efgh ijkl mnop)
+
+PASSO 2: ATUALIZAR ARQUIVO .ENV
+-------------------------------
+No arquivo backend/.env, substitua esta linha:
+SMTP_PASSWORD=
+
+Pela sua senha de aplicativo:
+SMTP_PASSWORD=abcd efgh ijkl mnop
+
+(NÃO use sua senha normal do Gmail, use apenas a senha de aplicativo gerada)
+
+========================================
+COMO TESTAR:
+========================================
+
+1. Inicie o backend:
+   cd backend
+   python server.py
+
+2. Inicie o frontend (outro terminal):
+   cd frontend
+   npm start
+
+3. Abra o site e vá para a seção "Contato"
+4. Preencha o formulário e clique em "Enviar"
+5. Você deve receber o email em dumarq.prod@gmail.com
+
+========================================
+ARQUIVOS MODIFICADOS:
+========================================
+
+✅ backend/requirements.txt - Adicionada biblioteca fastapi-mail
+✅ backend/.env - Adicionadas configurações de email
+✅ backend/server.py - Adicionado código para enviar emails
+✅ frontend/src/components/Contact.js - Modificado para usar API real
+
+========================================
+CONFIGURAÇÕES DE EMAIL:
+========================================
+
+De: dumarq.prod@gmail.com
+Para: dumarq.prod@gmail.com
+Servidor: smtp.gmail.com
+Porta: 587
+
+========================================
+SE TIVER PROBLEMAS:
+========================================
+
+1. Verifique se a senha de aplicativo está correta
+2. Certifique-se que a verificação em duas etapas está ativa
+3. Verifique se não há espaços na senha
+4. Confirme que o email dumarq.prod@gmail.com existe
+
+========================================
+PRÓXIMOS PASSOS APÓS CONFIGURAÇÃO:
+========================================
+
+Após configurar a senha, me avise e eu posso:
+- Testar a funcionalidade
+- Fazer ajustes se necessário
+- Explicar como funciona o código
+
+========================================
+DÚVIDAS?
+========================================
+
+Se tiver qualquer dúvida sobre esses passos, me pergunte!
+Posso explicar qualquer parte do código ou configuração.
